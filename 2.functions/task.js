@@ -69,7 +69,7 @@ function averageEvenElementsWorker(...arr) {
         countEvenElement++;
       }
     }
-    return sumEvenElement/countEvenElement
+    return sumEvenElement/countEvenElement;
   }else{
     return 0;
   }
