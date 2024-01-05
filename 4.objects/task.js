@@ -13,13 +13,15 @@ Student.prototype.setSubject = function (subjectName) {
 }
 
 Student.prototype.addMarks = function (...marks) {
-    if(marks.length){
-        this.marks = marks;
+    if(this.marks){
+        this.marks.push(...marks);
+    }else{
+        return 0;
     }
 }
 
 Student.prototype.getAverage = function () {
-    if (this.marks.length){
+    if (this.marks&&this.marks.length){
         return this.marks.reduce((m, mark) => m + mark, 0) / this.marks.length;
     }else{
         return 0;
