@@ -82,16 +82,15 @@ class Library {
     }
 
     giveBookByName(bookName) {
-        console.log(this.books)
-        // this.books.find(bookName)
-        for (let i of this.books){
-            if (this.books[i]['name']===bookName){
+        let returnBook = null
+        for(let i=0; i<this.books.length; i++){
+            if (this.books[i].name === bookName){
+                returnBook=this.books[i]
                 this.books.splice(i,1)
-                return this.books[i];
-            }else{
-                  return null;
+                break;
             }
         }
+        return returnBook;
     }
 }
 
