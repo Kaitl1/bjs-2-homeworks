@@ -1,26 +1,3 @@
-class Ring{
-    constructor(callback, time, canCall) {
-        this.callback = callback
-        this.time = time
-        this.canCall = canCall
-    }
-
-    getTime()
-    {
-        return this.time;
-    }
-
-    getCanCall()
-    {
-        return this.canCall;
-    }
-
-    setCanCall(canCall)
-    {
-        this.canCall = canCall;
-    }
-}
-
 class AlarmClock {
     constructor() {
         this.alarmCollection = []
@@ -31,24 +8,22 @@ class AlarmClock {
         if (!time||!callback) {
             throw new Error('Отсутствуют обязательные аргументы')
         }
-        this.alarmCollection.forEach((ring) => {
+        this.alarmCollection.some(ring => {
             if (ring.time === time) {
-                console.log('Уже присутствует звонок на это же время')
+                console.warn('Уже присутствует звонок на это же время')
             }
         }
     )
         for (let i = 0; i < this.alarmCollection.length; i++) {
             if(this.alarmCollection[i].time === time ){
-                console.log('Уже присутствует звонок на это же время')
+                console.warn('Уже присутствует звонок на это же время')
             }
         }
-    this.alarmCollection.push(new Ring(callback, time, true))
+    this.alarmCollection.push({callback:callback, time:time, canCall:true})
     }
 
     removeClock(time) {
-        let existingRings = this.alarmCollection.filter(function (ring) {
-            return (ring.getTime() === time);
-        })
+        this.alarmCollection=this.alarmCollection.filter((searchTime)=>searchTime['time']!==time)
     }
 
     getCurrentFormattedTime() {
@@ -67,19 +42,14 @@ class AlarmClock {
         if (this.intervalId) {
             return;
         }
-        this.intervalId = setInterval(this.runInterval(), 1000)
-    }
-
-    runInterval() {
-        let currentTime = this.getCurrentFormattedTime();
-
-        this.alarmCollection.forEach((ring) => {
-            if(ring.getTime()===currentTime && ring.getCanCall()===true){
-                ring.getCanCall(false)
-                ring.callback()
-            }
-        })
-    }
+            this.intervalId = setInterval(()=>{let currentTime = this.getCurrentFormattedTime();
+                this.alarmCollection.forEach((ring) => {
+                    if(ring['time']===currentTime && ring['canCall']===true){
+                        ring['canCall']=false
+                        ring['callback']()
+                    }
+                })}, 1000)
+        }
 
     stop() {
         clearInterval(this.intervalId)
@@ -88,7 +58,7 @@ class AlarmClock {
 
     resetAllCalls() {
         this.alarmCollection.forEach((n)=> {
-            n.setCanCall(true)
+            n['canCall']=true
         })
     }
 
@@ -97,3 +67,4 @@ class AlarmClock {
         this.alarmCollection = []
     }
 }
+
