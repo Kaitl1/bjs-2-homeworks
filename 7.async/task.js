@@ -8,12 +8,18 @@ class AlarmClock {
         if (!time||!callback) {
             throw new Error('Отсутствуют обязательные аргументы')
         }
-        this.alarmCollection.some(ring => {
-            if (ring.time === time) {
-                console.warn('Уже присутствует звонок на это же время')
-            }
+        // this.alarmCollection.some(ring => {
+        //     if (ring.time === time) {
+        //         console.warn('Уже присутствует звонок на это же время')
+        //     }
+
+        if(this.alarmCollection.some((ring)=>ring.time===time)){
+            console.warn('Уже присутствует звонок на это же время')
         }
-    )
+
+            // filter((searchTime)=>searchTime.time!==time)
+        // }
+    // )
         for (let i = 0; i < this.alarmCollection.length; i++) {
             if(this.alarmCollection[i].time === time ){
                 console.warn('Уже присутствует звонок на это же время')
@@ -23,19 +29,14 @@ class AlarmClock {
     }
 
     removeClock(time) {
-        this.alarmCollection=this.alarmCollection.filter((searchTime)=>searchTime['time']!==time)
+        this.alarmCollection=this.alarmCollection.filter((searchTime)=>searchTime.time!==time)
     }
 
     getCurrentFormattedTime() {
-        let hh = new Date().getHours()
-        let mm = new Date().getMinutes()
-        if(hh<=9){
-            hh='0'+hh
-        }
-        if (mm<=9){
-            mm='0'+mm
-        }
-        return hh+':'+mm;
+        return new Date().toLocaleTimeString("ru-Ru", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     }
 
     start() {
@@ -44,9 +45,9 @@ class AlarmClock {
         }
             this.intervalId = setInterval(()=>{let currentTime = this.getCurrentFormattedTime();
                 this.alarmCollection.forEach((ring) => {
-                    if(ring['time']===currentTime && ring['canCall']===true){
-                        ring['canCall']=false
-                        ring['callback']()
+                    if(ring.time===currentTime && ring.canCall===true){
+                        ring.canCall=false
+                        ring.callback()
                     }
                 })}, 1000)
         }
@@ -57,8 +58,8 @@ class AlarmClock {
     }
 
     resetAllCalls() {
-        this.alarmCollection.forEach((n)=> {
-            n['canCall']=true
+        this.alarmCollection.forEach((ring)=> {
+            ring.canCall=true
         })
     }
 
